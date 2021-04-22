@@ -55,7 +55,7 @@ class UserProfile(db.Model):
                            default=datetime.now, onupdate=datetime.now)
     # 关联用户
     user_id = db.Column(db.Integer, db.ForeignKey('accounts_user.id'))
-    # 建立用户的一对一关系属性user.profile  profile.user
+    # 建立用户的一对一关系属性 User.profile  Profile.user
     user = db.relationship('User', backref=db.backref('profile', uselist=False))
 
 
@@ -105,6 +105,20 @@ class Question(db.Model):
     # 建立与用户的一对多属性,user.question_list
     user = db.relationship('User', backref=db.backref('question_list', lazy='dynamic'))
 
+    @property
+    def comment_count(self):
+        """ 评论数量 """
+        return self.question_comment_list.filter_by(is_valid=True).count()
+
+    @property
+    def follow_count(self):
+        """ 关注的数量 """
+        return self.question_follow_list.filter_by(is_valid=True).count()
+    
+    @property
+    def answer_count(self):
+        return self.answer_list.filter_by(is_valid=True).count()
+
 
 class QuestionTags(db.Model):
     """ 问题下的标签 """
@@ -143,6 +157,11 @@ class Answer(db.Model):
     user = db.relationship('User', backref=db.backref('answer_list', lazy='dynamic'))
     # 建立与问题的一对多属性
     question = db.relationship('Question', backref=db.backref('answer_list', lazy='dynamic'))
+
+    @property
+    def love_count(self):
+        """ 点赞的数量 """
+        return self.answer_love_list.count()
 
 
 class AnswerComment(db.Model):

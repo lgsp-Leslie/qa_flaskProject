@@ -41,35 +41,40 @@
                     <!-- //banner图 -->
                     <!-- 分类菜单 -->
                     <div class="cls-menu-ls">
-                        <a href="#">推荐</a>
-                        <a href="#" class="active">关注</a>
+                        <a href="{{ url_for('qa.index') }}">推荐</a>
+                        <a href="{{ url_for('qa.follow') }}" class="active">关注</a>
                         <a href="#">热榜</a>
                     </div>
                     <!-- //分类菜单 -->
                     <!-- 问题列表 -->
                     <div class="qa-ls">
+                        {% for item in page_data.items %}
                         <div class="qa-item">
-                            <a href="detail.html" class="title">钟南山团队从尿液中分离出新冠病毒，这对疫情防治有什么影响？</a>
+                            <a href="{{ url_for('qa.detail', q_id=item.id) }}" class="title">{{ item.title }}</a>
                             <div class="desc">
-                                <div class="left">
-                                    <img src="./assets/home/qa/left.jpg" alt="" srcset="">
-                                </div>
+                                {% if item.img %}
+                                    <div class="left">
+                                        <img src="{{ item.img }}" alt="" srcset="">
+                                    </div>
+                                {% endif %}
+
                                 <div class="right">
-                                    <p class="show-desc">Vigorous Cooler： 尿液出现病毒并不罕见，但第一步是病毒要进入循环系统（血液、淋巴）。
-                                        比如寨卡病毒通过蚊子吸血进入循环系统，再进入泌尿系统。对于新型冠状病毒来说，第一步是通过呼吸系统进入下...
+                                    <div class="show-desc">{{ item.desc|d('暂无描述', True) }}...
                                         <span class="more">阅读原文<i class="glyphicon glyphicon-menu-down"></i></span>
-                                    </p>
-                                    <p class="show-all hidden">
-                                        27日，广州市政府新闻办在广州医科大学举办疫情防控专场新闻通气会，国家卫健委高级别专家组组长、国家呼吸系统疾病临床医学研究中心主任钟南山谈到疫情的预测时表示，疫情开始时，国外有流行病学家用权威的试验模型，预测2月初，中国感染新冠肺炎人数将达16万人。钟南山说：“这是没有考虑到国家的强力干预，也没有考虑春节后的延迟复工，我们也做了预测模型，2月中旬或下旬达到疫情高峰，确诊病例约六、七万人，投到国外权威期刊，被退了回来，感觉和上面的预测水平差太多，还有人给我微信‘你的话几天之内就会被碾个粉碎’。但事实上，我们预测更接近权威。”
+                                    </div>
+                                    <div class="show-all hidden">
+                                        {% autoescape false %}
+                                        {{ item.content|safe }}
+                                        {% endautoescape %}
                                         <span class="more">收起<i class="glyphicon glyphicon-menu-up"></i></span>
-                                    </p>
+                                    </div>
                                 </div>
                             </div>
                             <div class="qa-footer">
                                 <div>
                                     <button type="button" class="btn btn-info btn-sm">关 注</button>
                                 </div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-comment"></i> 113条评论</div>
+                                <div class="txt-menu"><i class="glyphicon glyphicon-comment"></i> {{ item.comment_count|d('0', True) }}条评论</div>
                                 <div class="txt-menu"><i class="glyphicon glyphicon-send"></i>分享</div>
                                 <div class="txt-menu"><i class="glyphicon glyphicon-flag"></i>举报</div>
                                 <div class="txt-menu btn-group">
@@ -82,239 +87,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="qa-item">
-                            <a href="detail.html" class="title">钟南山团队从尿液中分离出新冠病毒，这对疫情防治有什么影响？</a>
-                            <div class="desc">
-                                <div class="right">
-                                    <p class="show-desc">Vigorous Cooler： 尿液出现病毒并不罕见，但第一步是病毒要进入循环系统（血液、淋巴）。
-                                        比如寨卡病毒通过蚊子吸血进入循环系统，再进入泌尿系统。对于新型冠状病毒来说，第一步是通过呼吸系统进入下...
-                                        <span class="more">阅读原文<i class="glyphicon glyphicon-menu-down"></i></span>
-                                    </p>
-                                    <p class="show-all hidden">
-                                        27日，广州市政府新闻办在广州医科大学举办疫情防控专场新闻通气会，国家卫健委高级别专家组组长、国家呼吸系统疾病临床医学研究中心主任钟南山谈到疫情的预测时表示，疫情开始时，国外有流行病学家用权威的试验模型，预测2月初，中国感染新冠肺炎人数将达16万人。钟南山说：“这是没有考虑到国家的强力干预，也没有考虑春节后的延迟复工，我们也做了预测模型，2月中旬或下旬达到疫情高峰，确诊病例约六、七万人，投到国外权威期刊，被退了回来，感觉和上面的预测水平差太多，还有人给我微信‘你的话几天之内就会被碾个粉碎’。但事实上，我们预测更接近权威。”
-                                        <span class="more">收起<i class="glyphicon glyphicon-menu-up"></i></span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="qa-footer">
-                                <div>
-                                    <button type="button" class="btn btn-info btn-sm">关 注</button>
-                                </div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-comment"></i> 113条评论</div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-send"></i>分享</div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-flag"></i>举报</div>
-                                <div class="txt-menu"></div>
-                                <div class="txt-menu btn-group">
-                                    <i class="glyphicon glyphicon-option-horizontal dropdown-toggle"
-                                       data-toggle="dropdown"
-                                       aria-haspopup="true" aria-expanded="false"></i>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">不感兴趣</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="qa-item">
-                            <a href="detail.html" class="title">钟南山团队从尿液中分离出新冠病毒，这对疫情防治有什么影响？</a>
-                            <div class="desc">
-                                <div class="left">
-                                    <img src="./assets/home/qa/left.jpg" alt="" srcset="">
-                                </div>
-                                <div class="right">
-                                    <p class="show-desc">Vigorous Cooler： 尿液出现病毒并不罕见，但第一步是病毒要进入循环系统（血液、淋巴）。
-                                        比如寨卡病毒通过蚊子吸血进入循环系统，再进入泌尿系统。对于新型冠状病毒来说，第一步是通过呼吸系统进入下...
-                                        <span class="more">阅读原文<i class="glyphicon glyphicon-menu-down"></i></span>
-                                    </p>
-                                    <p class="show-all hidden">
-                                        27日，广州市政府新闻办在广州医科大学举办疫情防控专场新闻通气会，国家卫健委高级别专家组组长、国家呼吸系统疾病临床医学研究中心主任钟南山谈到疫情的预测时表示，疫情开始时，国外有流行病学家用权威的试验模型，预测2月初，中国感染新冠肺炎人数将达16万人。钟南山说：“这是没有考虑到国家的强力干预，也没有考虑春节后的延迟复工，我们也做了预测模型，2月中旬或下旬达到疫情高峰，确诊病例约六、七万人，投到国外权威期刊，被退了回来，感觉和上面的预测水平差太多，还有人给我微信‘你的话几天之内就会被碾个粉碎’。但事实上，我们预测更接近权威。”
-                                        <span class="more">收起<i class="glyphicon glyphicon-menu-up"></i></span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="qa-footer">
-                                <div>
-                                    <button type="button" class="btn btn-default btn-sm">已关注</button>
-                                </div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-comment"></i> 113条评论</div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-send"></i>分享</div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-flag"></i>举报</div>
-                                <div class="txt-menu"></div>
-                                <div class="txt-menu btn-group">
-                                    <i class="glyphicon glyphicon-option-horizontal dropdown-toggle"
-                                       data-toggle="dropdown"
-                                       aria-haspopup="true" aria-expanded="false"></i>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">不感兴趣</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="qa-item">
-                            <a href="detail.html" class="title">钟南山团队从尿液中分离出新冠病毒，这对疫情防治有什么影响？</a>
-                            <div class="desc">
-                                <div class="right">
-                                    <p class="show-desc">Vigorous Cooler： 尿液出现病毒并不罕见，但第一步是病毒要进入循环系统（血液、淋巴）。
-                                        比如寨卡病毒通过蚊子吸血进入循环系统，再进入泌尿系统。对于新型冠状病毒来说，第一步是通过呼吸系统进入下...
-                                        <span class="more">阅读原文<i class="glyphicon glyphicon-menu-down"></i></span>
-                                    </p>
-                                    <p class="show-all hidden">
-                                        27日，广州市政府新闻办在广州医科大学举办疫情防控专场新闻通气会，国家卫健委高级别专家组组长、国家呼吸系统疾病临床医学研究中心主任钟南山谈到疫情的预测时表示，疫情开始时，国外有流行病学家用权威的试验模型，预测2月初，中国感染新冠肺炎人数将达16万人。钟南山说：“这是没有考虑到国家的强力干预，也没有考虑春节后的延迟复工，我们也做了预测模型，2月中旬或下旬达到疫情高峰，确诊病例约六、七万人，投到国外权威期刊，被退了回来，感觉和上面的预测水平差太多，还有人给我微信‘你的话几天之内就会被碾个粉碎’。但事实上，我们预测更接近权威。”
-                                        <span class="more">收起<i class="glyphicon glyphicon-menu-up"></i></span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="qa-footer">
-                                <div>
-                                    <button type="button" class="btn btn-info btn-sm">关 注</button>
-                                </div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-comment"></i> 113条评论</div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-send"></i>分享</div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-flag"></i>举报</div>
-                                <div class="txt-menu"></div>
-                                <div class="txt-menu btn-group">
-                                    <i class="glyphicon glyphicon-option-horizontal dropdown-toggle"
-                                       data-toggle="dropdown"
-                                       aria-haspopup="true" aria-expanded="false"></i>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">不感兴趣</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="qa-item">
-                            <a href="detail.html" class="title">钟南山团队从尿液中分离出新冠病毒，这对疫情防治有什么影响？</a>
-                            <div class="desc">
-                                <div class="left">
-                                    <img src="./assets/home/qa/left.jpg" alt="" srcset="">
-                                </div>
-                                <div class="right">
-                                    <p class="show-desc">Vigorous Cooler： 尿液出现病毒并不罕见，但第一步是病毒要进入循环系统（血液、淋巴）。
-                                        比如寨卡病毒通过蚊子吸血进入循环系统，再进入泌尿系统。对于新型冠状病毒来说，第一步是通过呼吸系统进入下...
-                                        <span class="more">阅读原文<i class="glyphicon glyphicon-menu-down"></i></span>
-                                    </p>
-                                    <p class="show-all hidden">
-                                        27日，广州市政府新闻办在广州医科大学举办疫情防控专场新闻通气会，国家卫健委高级别专家组组长、国家呼吸系统疾病临床医学研究中心主任钟南山谈到疫情的预测时表示，疫情开始时，国外有流行病学家用权威的试验模型，预测2月初，中国感染新冠肺炎人数将达16万人。钟南山说：“这是没有考虑到国家的强力干预，也没有考虑春节后的延迟复工，我们也做了预测模型，2月中旬或下旬达到疫情高峰，确诊病例约六、七万人，投到国外权威期刊，被退了回来，感觉和上面的预测水平差太多，还有人给我微信‘你的话几天之内就会被碾个粉碎’。但事实上，我们预测更接近权威。”
-                                        <span class="more">收起<i class="glyphicon glyphicon-menu-up"></i></span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="qa-footer">
-                                <div>
-                                    <button type="button" class="btn btn-info btn-sm">关 注</button>
-                                </div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-comment"></i> 113条评论</div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-send"></i>分享</div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-flag"></i>举报</div>
-                                <div class="txt-menu"></div>
-                                <div class="txt-menu btn-group">
-                                    <i class="glyphicon glyphicon-option-horizontal dropdown-toggle"
-                                       data-toggle="dropdown"
-                                       aria-haspopup="true" aria-expanded="false"></i>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">不感兴趣</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="qa-item">
-                            <a href="detail.html" class="title">钟南山团队从尿液中分离出新冠病毒，这对疫情防治有什么影响？</a>
-                            <div class="desc">
-                                <div class="right">
-                                    <p class="show-desc">Vigorous Cooler： 尿液出现病毒并不罕见，但第一步是病毒要进入循环系统（血液、淋巴）。
-                                        比如寨卡病毒通过蚊子吸血进入循环系统，再进入泌尿系统。对于新型冠状病毒来说，第一步是通过呼吸系统进入下...
-                                        <span class="more">阅读原文<i class="glyphicon glyphicon-menu-down"></i></span>
-                                    </p>
-                                    <p class="show-all hidden">
-                                        27日，广州市政府新闻办在广州医科大学举办疫情防控专场新闻通气会，国家卫健委高级别专家组组长、国家呼吸系统疾病临床医学研究中心主任钟南山谈到疫情的预测时表示，疫情开始时，国外有流行病学家用权威的试验模型，预测2月初，中国感染新冠肺炎人数将达16万人。钟南山说：“这是没有考虑到国家的强力干预，也没有考虑春节后的延迟复工，我们也做了预测模型，2月中旬或下旬达到疫情高峰，确诊病例约六、七万人，投到国外权威期刊，被退了回来，感觉和上面的预测水平差太多，还有人给我微信‘你的话几天之内就会被碾个粉碎’。但事实上，我们预测更接近权威。”
-                                        <span class="more">收起<i class="glyphicon glyphicon-menu-up"></i></span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="qa-footer">
-                                <div>
-                                    <button type="button" class="btn btn-info btn-sm">关 注</button>
-                                </div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-comment"></i> 113条评论</div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-send"></i>分享</div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-flag"></i>举报</div>
-                                <div class="txt-menu"></div>
-                                <div class="txt-menu btn-group">
-                                    <i class="glyphicon glyphicon-option-horizontal dropdown-toggle"
-                                       data-toggle="dropdown"
-                                       aria-haspopup="true" aria-expanded="false"></i>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">不感兴趣</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="qa-item">
-                            <a href="detail.html" class="title">钟南山团队从尿液中分离出新冠病毒，这对疫情防治有什么影响？</a>
-                            <div class="desc">
-                                <div class="left">
-                                    <img src="./assets/home/qa/left.jpg" alt="" srcset="">
-                                </div>
-                                <div class="right">
-                                    <p class="show-desc">Vigorous Cooler： 尿液出现病毒并不罕见，但第一步是病毒要进入循环系统（血液、淋巴）。
-                                        比如寨卡病毒通过蚊子吸血进入循环系统，再进入泌尿系统。对于新型冠状病毒来说，第一步是通过呼吸系统进入下...
-                                        <span class="more">阅读原文<i class="glyphicon glyphicon-menu-down"></i></span>
-                                    </p>
-                                    <p class="show-all hidden">
-                                        27日，广州市政府新闻办在广州医科大学举办疫情防控专场新闻通气会，国家卫健委高级别专家组组长、国家呼吸系统疾病临床医学研究中心主任钟南山谈到疫情的预测时表示，疫情开始时，国外有流行病学家用权威的试验模型，预测2月初，中国感染新冠肺炎人数将达16万人。钟南山说：“这是没有考虑到国家的强力干预，也没有考虑春节后的延迟复工，我们也做了预测模型，2月中旬或下旬达到疫情高峰，确诊病例约六、七万人，投到国外权威期刊，被退了回来，感觉和上面的预测水平差太多，还有人给我微信‘你的话几天之内就会被碾个粉碎’。但事实上，我们预测更接近权威。”
-                                        <span class="more">收起<i class="glyphicon glyphicon-menu-up"></i></span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="qa-footer">
-                                <div>
-                                    <button type="button" class="btn btn-info btn-sm">关 注</button>
-                                </div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-comment"></i> 113条评论</div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-send"></i>分享</div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-flag"></i>举报</div>
-                                <div class="txt-menu"></div>
-                                <div class="txt-menu btn-group">
-                                    <i class="glyphicon glyphicon-option-horizontal dropdown-toggle"
-                                       data-toggle="dropdown"
-                                       aria-haspopup="true" aria-expanded="false"></i>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">不感兴趣</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="qa-item">
-                            <a href="detail.html" class="title">钟南山团队从尿液中分离出新冠病毒，这对疫情防治有什么影响？</a>
-                            <div class="desc">
-                                <div class="right">
-                                    <p class="show-desc">Vigorous Cooler： 尿液出现病毒并不罕见，但第一步是病毒要进入循环系统（血液、淋巴）。
-                                        比如寨卡病毒通过蚊子吸血进入循环系统，再进入泌尿系统。对于新型冠状病毒来说，第一步是通过呼吸系统进入下...
-                                        <span class="more">阅读原文<i class="glyphicon glyphicon-menu-down"></i></span>
-                                    </p>
-                                    <p class="show-all hidden">
-                                        27日，广州市政府新闻办在广州医科大学举办疫情防控专场新闻通气会，国家卫健委高级别专家组组长、国家呼吸系统疾病临床医学研究中心主任钟南山谈到疫情的预测时表示，疫情开始时，国外有流行病学家用权威的试验模型，预测2月初，中国感染新冠肺炎人数将达16万人。钟南山说：“这是没有考虑到国家的强力干预，也没有考虑春节后的延迟复工，我们也做了预测模型，2月中旬或下旬达到疫情高峰，确诊病例约六、七万人，投到国外权威期刊，被退了回来，感觉和上面的预测水平差太多，还有人给我微信‘你的话几天之内就会被碾个粉碎’。但事实上，我们预测更接近权威。”
-                                        <span class="more">收起<i class="glyphicon glyphicon-menu-up"></i></span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="qa-footer">
-                                <div>
-                                    <button type="button" class="btn btn-info btn-sm">关 注</button>
-                                </div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-comment"></i> 113条评论</div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-send"></i>分享</div>
-                                <div class="txt-menu"><i class="glyphicon glyphicon-flag"></i>举报</div>
-                                <div class="txt-menu"></div>
-                                <div class="txt-menu btn-group">
-                                    <i class="glyphicon glyphicon-option-horizontal dropdown-toggle"
-                                       data-toggle="dropdown"
-                                       aria-haspopup="true" aria-expanded="false"></i>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">不感兴趣</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
                 <div class="col-md-3">
