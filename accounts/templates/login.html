@@ -21,6 +21,7 @@
                 <!-- 表单登录 -->
                 <form class="login-form box-wrap" method="POST" action="{{ url_for('accounts.login') }}">
                     {{ form.csrf_token }}
+                    <input type="hidden" name="next" value="{{ next_url|d('') }}">
                     <div class="form-group">
                         <label for="id-user-name">用户名</label>
                         {{ form.username }}

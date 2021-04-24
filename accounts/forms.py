@@ -1,10 +1,12 @@
 import hashlib
 
+from flask import request
+from flask_login import login_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, validators
 from wtforms.validators import Length, ValidationError
 
-from models import User, db, UserProfile
+from models import User, db, UserProfile, UserLoginHistory
 from utils import constants
 from utils.validators import phone_required
 
@@ -83,6 +85,28 @@ class LoginForm(FlaskForm):
                 self.username.errors = ['用户已被禁用']
         return result
 
+    def do_login(self):
+        """ 执行登录的逻辑代码 """
+        username = self.username.data
+        password = self.password.data
 
-    def login(self):
-        pass
+        try:
+            # 1、查找对应的用户
+            user = User.query.filter_by(username=username, password=password).first()
+
+            # 2、登录用户
+            # 自定义登录
+            # session['user_id'] = user.id
+            # 使用flask_login扩展登录
+            login_user(user)
+
+            # 3、记录日志
+            ip = request.remote_addr
+            ua = request.headers.get('user-agent', None)
+            obj = UserLoginHistory(username=username, ip=ip, ua=ua, user=user)
+            db.session.add(obj)
+            db.session.commit()
+            return user
+        except Exception as e:
+            print(e)
+        return None

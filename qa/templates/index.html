@@ -12,7 +12,12 @@
                 <div class="col-md-9">
                     <!-- 消息通知区域 -->
                     {% include 'components/flash_messages.html' %}
-                    {{ g.current_user.nickname }}
+                    <!-- 自定义登录 -->
+                    {# <div>{{ g.current_user.nickname }}</div> #}
+                    <!-- 使用flask-login登录 -->
+                    {% if current_user.is_authenticated %}
+                        <div>{{ current_user.nickname }}</div>
+                    {% endif %}
                     <!-- // 消息通知区域 -->
                     <!-- banner图 -->
                     <div id="id-index-banner" class="carousel slide" data-ride="carousel">

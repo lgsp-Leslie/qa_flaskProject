@@ -33,6 +33,22 @@ class User(db.Model):
                            default=datetime.now, onupdate=datetime.now)
     # profile = db.relationship('UserProfile')
 
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        """ 有效的用户才能登录系统 """
+        return self.status == constants.UserStatus.USER_ACTIVE.value
+    
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return '{}'.format(self.id)
+
     def __str__(self):
         return self.username
 
