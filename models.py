@@ -33,6 +33,9 @@ class User(db.Model):
                            default=datetime.now, onupdate=datetime.now)
     # profile = db.relationship('UserProfile')
 
+    def __str__(self):
+        return self.username
+
 
 class UserProfile(db.Model):
     """ 用户详细信息 """

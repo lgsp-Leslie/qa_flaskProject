@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% from 'macro/form_errors.html' import form_field_errors %}
 {% block title %}{{ super() }}登录{% endblock %}
 {% block css %}
-    <link rel="stylesheet" href="./assets/style/login.css">
+    <link rel="stylesheet" href="/assets/style/login.css">
     <link rel="stylesheet" href="//at.alicdn.com/t/font_1658093_nokjvsp8hws.css">
 {% endblock %}
 
@@ -10,26 +11,26 @@
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <!-- 消息通知区域 -->
-                <div class="alert alert-success alert-dismissible fade in" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                            aria-hidden="true">×</span></button>
-                    <span>注册成功，请登录</span>
-                </div>
+                {# 展示flash消息 #}
+                {% include 'components/flash_messages.html' %}
                 <!-- // 消息通知区域 -->
                 <div class="login-header">
                     <h2 class="title text-center">在线问答系统登录</h2>
                     <div class="slogan text-center">有问题 上问答</div>
                 </div>
                 <!-- 表单登录 -->
-                <form class="login-form box-wrap" method="GET" action="./index.html">
+                <form class="login-form box-wrap" method="POST" action="{{ url_for('accounts.login') }}">
+                    {{ form.csrf_token }}
                     <div class="form-group">
                         <label for="id-user-name">用户名</label>
-                        <input type="email" class="form-control input-lg" id="id-user-name" placeholder="用户名">
+                        {{ form.username }}
                     </div>
+                    {{ form_field_errors(form.username.errors) }}
                     <div class="form-group">
                         <label for="id-password">密码</label>
-                        <input type="password" class="form-control input-lg" id="id-password" placeholder="请输入密码">
+                        {{ form.password }}
                     </div>
+                    {{ form_field_errors(form.password.errors) }}
                     <div class="form-group">
                         <button type="submit" class="btn btn-info btn-block btn-lg">登录</button>
                     </div>
