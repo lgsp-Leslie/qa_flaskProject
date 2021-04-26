@@ -1,4 +1,5 @@
 from flask import Flask, session, g
+from flask_ckeditor import CKEditor
 from flask_login import LoginManager
 
 from models import db, User
@@ -6,12 +7,16 @@ from accounts.views import accounts
 from qa.views import qa
 from utils.filters import number_split
 
-app = Flask(__name__, static_folder='assets')
+app = Flask(__name__, static_folder='medias')
 # 从配置文件加载配置
 app.config.from_object('conf.Config')
 
 # 数据库初始化
 db.init_app(app)
+
+# 富文本初始化
+ckeditor = CKEditor()
+ckeditor.init_app(app)
 
 # 登录验证flask-login
 login_manager = LoginManager()

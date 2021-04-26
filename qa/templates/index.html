@@ -15,9 +15,9 @@
                     <!-- 自定义登录 -->
                     {# <div>{{ g.current_user.nickname }}</div> #}
                     <!-- 使用flask-login登录 -->
-                    {% if current_user.is_authenticated %}
-                        <div>{{ current_user.nickname }}</div>
-                    {% endif %}
+{#                    {% if current_user.is_authenticated %}#}
+{#                        <div>{{ current_user.nickname }}</div>#}
+{#                    {% endif %}#}
                     <!-- // 消息通知区域 -->
                     <!-- banner图 -->
                     <div id="id-index-banner" class="carousel slide" data-ride="carousel">
@@ -43,11 +43,7 @@
                     </div>
                     <!-- //banner图 -->
                     <!-- 分类菜单 -->
-                    <div class="cls-menu-ls">
-                        <a href="#" class="active">推荐</a>
-                        <a href="#">关注</a>
-                        <a href="#">热榜</a>
-                    </div>
+                    {% include 'components/classified_menu.html' %}
                     <!-- //分类菜单 -->
                     <!-- 问题列表 -->
                     <div class="qa-ls">

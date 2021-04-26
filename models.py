@@ -125,6 +125,10 @@ class Question(db.Model):
     user = db.relationship('User', backref=db.backref('question_list', lazy='dynamic'))
 
     @property
+    def get_img_url(self):
+        return 'medias/' + self.img if self.img else ''
+
+    @property
     def comment_count(self):
         """ 评论数量 """
         return self.question_comment_list.filter_by(is_valid=True).count()
@@ -137,6 +141,11 @@ class Question(db.Model):
     @property
     def answer_count(self):
         return self.answer_list.filter_by(is_valid=True).count()
+    
+    @property
+    def tags(self):
+        """ 文章的标签 """
+        return self.tag_list.filter_by(is_valid=True)
 
 
 class QuestionTags(db.Model):
