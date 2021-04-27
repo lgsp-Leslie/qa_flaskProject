@@ -11,6 +11,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-9">
+                {% include 'components/flash_messages.html' %}
                 <!-- 问题标签 -->
                 {% if question.tags %}
                     <ul class="que-tag-ls">
@@ -97,7 +98,7 @@
                         </div>
                         <div class="desc">
                             <h4>{{ answer.user.nickname }}</h4>
-                            <p>{{ answer.user.profile.maxim }}</p>
+                            <p>{{ answer.user.profile.maxim|d('这家伙很懒，啥都没写！', true) }}</p>
                         </div>
                     </div>
                     <div class="answer-stats">5,550 人赞同了该回答</div>
@@ -106,7 +107,7 @@
                         {{ answer.content|safe }}
                         {% endautoescape %}
                     </div>
-                    <div class="answer-time">发布于昨天{{ answer.created_at }}</div>
+                    <div class="answer-time">发布于{{ answer.created_at }}</div>
                     <!-- 底部菜单 -->
                     <div class="qa-footer">
                         <div>
@@ -388,22 +389,36 @@
 </div>
 <!-- 写回答，对话框 -->
 <div class="modal fade" id="addComment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <form class="form-horizontal modal-dialog" role="document" method="post" action="/templates">
+    <form class="form-horizontal modal-dialog" role="document" method="post"
+          action="{{ url_for('qa.detail', q_id=question.id) }}">
+        {{ form.csrf_token }}
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">写回答</h4>
             </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <textarea class="form-control" rows="10" placeholder="请输入正文"></textarea>
+            {% if current_user.is_authenticated %}
+                <div class="modal-body">
+                    <div>
+                        {{ form.content }}
+                        {{ ckeditor.load() }}
+                        {{ ckeditor.config(name='content') }}
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="submit" class="btn btn-primary">提交</button>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </div>
+            {% else %}
+                <div class="modal-body text-center">
+                    <p><h4>您尚未登录，请登录后再回答！</h4></p>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ url_for('accounts.login') }}" class="btn btn-primary">登录</a>
+                    <a href="{{ url_for('accounts.register') }}" class="btn btn-primary">注册</a>
+                </div>
+            {% endif %}
         </div>
     </form>
 </div>

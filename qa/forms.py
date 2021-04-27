@@ -10,7 +10,7 @@ from flask_wtf.file import FileAllowed
 from werkzeug.utils import secure_filename
 from wtforms import StringField, TextAreaField, FileField, validators
 
-from models import Question, db, QuestionTags
+from models import Question, db, QuestionTags, Answer
 
 
 class WriteQuestionForm(FlaskForm):
@@ -33,7 +33,7 @@ class WriteQuestionForm(FlaskForm):
     content = CKEditorField(label='内容', render_kw={
         'class': 'form-control',
         'placeholder': '请输入正文'
-    }, validators=[validators.DataRequired('正文必填'), validators.Length(min=30, message='正文不能少于30字')])
+    }, validators=[validators.DataRequired('正文必填'), validators.Length(min=30, message='正文不能少于30个字')])
 
     def save(self):
         """ 发布问题 """
@@ -58,3 +58,20 @@ class WriteQuestionForm(FlaskForm):
                 db.session.add(tag_obj)
         db.session.commit()
         return que_obj
+
+
+class WriteAnswerForm(FlaskForm):
+    """ 写回答 """
+    content = CKEditorField(label='回答内容', render_kw={
+        'class': 'form-control',
+        'placeholder': '请输入正文'
+    }, validators=[validators.DataRequired('回答内容不能为空'), validators.Length(min=9, message='评论不能少于9个字')])
+
+    def save(self, question):
+        """ 保存表单数据 """
+        content = self.content.data
+        user = current_user
+        answer_obj = Answer(content=content, user=user, question=question)
+        db.session.add(answer_obj)
+        db.session.commit()
+        return answer_obj
