@@ -16,12 +16,44 @@ def index():
     return render_template('index.html')
 
 
+@qa.route('/follow_page')
+def follow_page():
+    """ 关注 """
+    page = int(request.args.get('page', 1))
+    page_data = Question.query.filter_by(is_valid=True).order_by(Question.updated_at.desc()).paginate(page=page,
+                                                                                                      per_page=Config.PER_PAGE)
+    return render_template('follow_page.html', page_data=page_data)
+
+
 @qa.route('/follow')
 def follow():
     """ 关注 """
     page = int(request.args.get('page', 1))
-    page_data = Question.query.filter_by(is_valid=True).order_by(Question.updated_at.desc()).paginate(page=page, per_page=Config.PER_PAGE)
+    page_data = Question.query.filter_by(is_valid=True).order_by(Question.updated_at.desc()).paginate(page=page,
+                                                                                                      per_page=Config.PER_PAGE)
     return render_template('follow.html', page_data=page_data)
+
+
+@qa.route('/qa/list')
+def question_list():
+    """ 查询问题数据列表 """
+    """
+    json
+    {
+        'code': 0,
+        'data': '',
+    }
+    """
+    try:
+        page = int(request.args.get('page', 1))
+        page_data = Question.query.filter_by(is_valid=True).order_by(Question.updated_at.desc()).paginate(page=page, per_page=Config.PER_PAGE)
+        data = render_template('qa_list.html', page_data=page_data)
+        code = 0
+    except Exception as e:
+        print(e)
+        data = ''
+        code = 1
+    return {'code': code, 'data': data}
 
 
 @qa.route('/write', methods=['GET', 'POST'])
