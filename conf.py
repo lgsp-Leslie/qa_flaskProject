@@ -11,4 +11,4 @@ class Config(object):
     # 文件上传的根路径
     MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'medias')
     # 分页，每页数据的大小
-    PER_PAGE = 3
+    PER_PAGE = 2

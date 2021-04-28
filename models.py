@@ -147,6 +147,11 @@ class Question(db.Model):
         """ 文章的标签 """
         return self.tag_list.filter_by(is_valid=True)
 
+    @property
+    def answer_love_count(self):
+        """ 点赞的数量 """
+        return self.question_love_list.count()
+
 
 class QuestionTags(db.Model):
     """ 问题下的标签 """
