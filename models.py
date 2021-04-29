@@ -196,6 +196,14 @@ class Answer(db.Model):
         """ 点赞的数量 """
         return self.answer_love_list.count()
 
+    def comment_list(self, reply_id=None):
+        """ 有效的评论列表 """
+        return self.answer_comment_list.filter_by(is_valid=True, reply_id=reply_id)
+
+    @property
+    def comment_count(self):
+        return self.answer_comment_list.filter_by(is_valid=True).count()
+
 
 class AnswerComment(db.Model):
     """ 回答的评论 """

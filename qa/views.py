@@ -117,8 +117,9 @@ def comments(answer_id):
                 return jsonify(result), 400
             # 获取数据
             content = request.form.get('content', '')
+            reply_id = request.form.get('reply_id', None)
             question = answer.question
-            comment_obj = AnswerComment(content=content, user=current_user, answer=answer, question=question)
+            comment_obj = AnswerComment(content=content, user=current_user, answer=answer, reply_id=reply_id, question=question)
             db.session.add(comment_obj)
             db.session.commit()
             result = {'code': 0, 'message': '评论成功'}
