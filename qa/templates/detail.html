@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% from 'macro/answer_comment_item.html' import comment_item_show %}
 {% block title %}{{ super() }}文章详情{% endblock %}
 {% block css %}
     <link rel="stylesheet" href="/assets/style/detail.css">
@@ -118,7 +117,7 @@
                             <button type="button" class="btn btn-info btn-sm"><i
                                     class="glyphicon glyphicon-thumbs-down"></i></button>
                         </div>
-                        <div class="txt-menu"><i class="glyphicon glyphicon-comment"></i> 113条评论</div>
+                        <div class="txt-menu"><i class="glyphicon glyphicon-comment"></i> {{ answer.comment_count|d('0', True) }}条评论</div>
                         <div class="txt-menu"><i class="glyphicon glyphicon-send"></i>分享</div>
                         <div class="txt-menu"><i class="glyphicon glyphicon-heart"></i>收藏</div>
                         <div class="txt-menu"><i class="glyphicon glyphicon-flag"></i>举报</div>
@@ -141,21 +140,30 @@
                         </div>
                         <!-- // 统计和菜单 -->
                         <!-- 评论列表 -->
-                        <div class="comment-ls">
-                            {% for item in answer.comment_list() %}
-                                {{ comment_item_show(item) }}
-                                {% for item_reply in answer.comment_list(item.id) %}
-                                    {{ comment_item_show(item_reply) }}
-                                {% endfor %}
-                            {% endfor %}
-
+                        <div class="comment-ls" id="id-comment-ls">
+                            <p>内容正在加载中</p>
                         </div>
                         <!-- // 评论列表 -->
+
+                        <nav>
+                            <ul class="pager">
+                                <li class="previous"><a href="javascript:;">上一页</a></li>
+                                <li class="next"><a href="javascript:;">下一页</a></li>
+                            </ul>
+                        </nav>
+
                         <!-- 发表评论 -->
-                        <form class="form-horizontal comment-publish">
-                            <input type="text" name="content" class="form-control" placeholder="写下你的评论...">
-                            <button type="button" class="btn btn-default btn-grey">发布</button>
-                        </form>
+                        {% if current_user.is_authenticated %}
+                            <form class="form-horizontal comment-publish">
+                                <input type="text" name="content" class="form-control" placeholder="写下你的评论...">
+                                <button type="button" class="btn btn-default btn-grey btn-answer">发布</button>
+                            </form>
+                        {% else %}
+                            <div class="form-control">
+                                <label class="pull-right">评论请先<a href="{{ url_for('accounts.login') }}">登录</a>&nbsp;Or&nbsp;<a
+                                        href="{{ url_for('accounts.register') }}">注册</a>后再评论</label>
+                            </div>
+                        {% endif %}
                         <!-- // 发表评论 -->
                     </div>
                     <!-- // 评论框 -->
@@ -303,37 +311,93 @@
                 $('.show-all').removeClass('hidden');
             })
 
-            // 评论
-            let form = $('.comment-publish');
-            // 绑定表单事件
-            $('.btn', form).click(function () {
-                let _form = $(this).parent()
-                let content = $('input[name=content]', _form)
-                let _data = _form.serialize();
-                $.ajax({
-                    url: '{{ url_for("qa.comments", answer_id=answer.id) }}',
-                    method: 'post',
-                    data: _data,
-                    complete: (res) => {
-                        console.log('res：', res)
-                        if (res.status === 201) {
-                            {#window.alert('评论成功')#}
-                            window.alert(res.responseJSON.message);
-                            content.val('')
-                        } else if (res.status === 400) {
-                            window.alert(res.responseJSON.message);
-                        } else {
-                            window.alert('请求失败，请稍后再试！')
-                        }
-                    },
+            // 绑定评论表单的提交对象
+            function bindCommentPublishEvent(html) {
+                let form = $('.comment-publish', html);
+                // 绑定表单事件
+                $('.btn', form).click(function () {
+                    let _form = $(this).parent()
+                    let content = $('input[name=content]', _form)
+                    let _data = _form.serialize();
+                    $.ajax({
+                        url: '{{ url_for("qa.comments", answer_id=answer.id) }}',
+                        method: 'post',
+                        data: _data,
+                        complete: (res) => {
+                            console.log('res：', res)
+                            if (res.status === 201) {
+                                {#window.alert('评论成功')#}
+                                window.alert(res.responseJSON.message);
+                                content.val('')
+                            } else if (res.status === 400) {
+                                window.alert(res.responseJSON.message);
+                            } else {
+                                window.alert('请求失败，请稍后再试！')
+                            }
+                        },
+                    })
                 })
-            })
+            }
 
             // 评论回复按钮事件
-            $('.link-reply').click(function () {
-                let _id = $(this).data('id');
-                let _form = $('#id-comment-' + _id);
-                _form.removeClass('hidden');
+            function bindReplyEvent(html) {
+                $('.link-reply', html).click(function () {
+                    let _id = $(this).data('id');
+                    let _form = $('#id-comment-' + _id);
+                    _form.removeClass('hidden');
+                })
+            }
+
+            // 评论列表的异步加载
+            let comment_ls = $('#id-comment-ls');
+            let page = 1;
+
+            function loadPageData(page) {
+                page = page || 1
+                $.ajax({
+                    url: "{{ url_for('qa.comments', answer_id=answer.id) }}",
+                    method: 'get',
+                    data: {
+                        page: page,
+                    },
+                    complete: (res) => {
+                        let result = res.responseJSON;
+                        if (res.status === 200) {
+                            if (result.code === 0) {
+                                let html = $(result.data);
+                                // 绑定回复事件
+                                bindReplyEvent(html);
+                                // 绑定回复表单提交事件
+                                bindCommentPublishEvent(html);
+                                comment_ls.empty().append(html);
+                            } else {
+
+                            }
+                        } else {
+                            window.alert(result.message);
+                        }
+                    }
+                })
+            }
+
+            $('.pager .previous').click(() => {
+                page -= 1;
+                if (page < 1) {
+                    page = 1
+                    window.alert('已经是第一页了！')
+                }
+                loadPageData(page);
+            })
+            $('.pager .next').click(() => {
+                page += 1;
+                loadPageData(page);
+            })
+            // 默认加载第一页数据
+            loadPageData(page)
+
+            $('.btn-answer').click(function () {
+                bindCommentPublishEvent()
+
             })
         })
     </script>

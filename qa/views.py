@@ -128,6 +128,12 @@ def comments(answer_id):
             result = {'code': 2, 'message': '服务器正忙，请稍后重试'}
             return jsonify(result), 500
     else:
-        # 获取评论
-        pass
-
+        try:
+            # 获取评论列表
+            page = int(request.args.get('page', 1))
+            page_data = answer.comment_list().paginate(page=page, per_page=Config.PER_PAGE)
+            data = render_template('comments.html', page_data=page_data, answer=answer)
+            return jsonify({'code': 0, 'data': data, 'meta': {'page': page}}), 200
+        except Exception as e:
+            print(e)
+            return jsonify({'code': 1, 'data': '', 'message': '服务器正忙，请稍后再试！'}), 500
