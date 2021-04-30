@@ -114,7 +114,7 @@ def comments(answer_id):
         try:
             if not current_user.is_authenticated:
                 result = {'code': 1, 'message': '请登录'}
-                return jsonify(result), 400
+                return jsonify(result), 401
             # 获取数据
             content = request.form.get('content', '')
             reply_id = request.form.get('reply_id', None)
@@ -137,3 +137,20 @@ def comments(answer_id):
         except Exception as e:
             print(e)
             return jsonify({'code': 1, 'data': '', 'message': '服务器正忙，请稍后再试！'}), 500
+
+
+@qa.route('/comment/love/<int:comment_id>', methods=['POST'])
+def comment_love(comment_id):
+    """ 为评论点赞 """
+    try:
+        if not current_user.is_authenticated:
+            return '', 401
+        comment_obj = AnswerComment.query.get(comment_id)
+        comment_obj.love_count += 1
+        db.session.add(comment_obj)
+        db.session.commit()
+    except Exception as e:
+        abort(500)
+    return '', 201
+
+

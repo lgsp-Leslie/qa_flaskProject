@@ -160,7 +160,7 @@
                             </form>
                         {% else %}
                             <div class="form-control">
-                                <label class="pull-right">评论请先<a href="{{ url_for('accounts.login') }}">登录</a>&nbsp;Or&nbsp;<a
+                                <label class="pull-right">评论请先<a href="{{ url_for('accounts.login', next="/detail/{}".format(question.id)) }}">登录</a>&nbsp;Or&nbsp;<a
                                         href="{{ url_for('accounts.register') }}">注册</a>后再评论</label>
                             </div>
                         {% endif %}
@@ -287,7 +287,7 @@
                     <h4>您尚未登录，请登录后再回答！</h4>
                 </div>
                 <div class="modal-footer">
-                    <a href="{{ url_for('accounts.login') }}" class="btn btn-primary">登录</a>
+                    <a href="{{ url_for('accounts.login', next="/detail/{}".format(question.id)) }}" class="btn btn-primary">登录</a>
                     <a href="{{ url_for('accounts.register') }}" class="btn btn-primary">注册</a>
                 </div>
             {% endif %}
@@ -329,8 +329,9 @@
                                 {#window.alert('评论成功')#}
                                 window.alert(res.responseJSON.message);
                                 content.val('')
-                            } else if (res.status === 400) {
+                            } else if (res.status === 401) {
                                 window.alert(res.responseJSON.message);
+                                window.location.href = '{{ url_for("accounts.login", next="/detail/{}".format(question.id)) }}'
                             } else {
                                 window.alert('请求失败，请稍后再试！')
                             }
@@ -347,6 +348,33 @@
                     _form.removeClass('hidden');
                 })
             }
+
+            // 绑定点赞事件
+            function bindCommentLoveEvent(html) {
+                $('.link-love', html).click(function () {
+                    let _this = $(this)
+                    let url = $(this).data('url')
+                    $.ajax({
+                        url: url,
+                        method: 'post',
+                        data: {},
+                        complete: (res) => {
+                            if (res.status === 201) {
+                                alert('点赞成功')
+                                let count = $('span', _this).text();
+                                count = parseInt(count) + 1
+                                $('span', _this).text(count);
+                            } else if(res.status === 401) {
+                                alert('请登录')
+                                window.location.href = '{{ url_for("accounts.login", next="/detail/{}".format(question.id)) }}'
+                            } else {
+                                alert('服务器正忙')
+                            }
+                        },
+                    })
+                })
+            }
+
 
             // 评论列表的异步加载
             let comment_ls = $('#id-comment-ls');
@@ -369,6 +397,8 @@
                                 bindReplyEvent(html);
                                 // 绑定回复表单提交事件
                                 bindCommentPublishEvent(html);
+                                // 绑定评论点赞事件
+                                bindCommentLoveEvent(html);
                                 comment_ls.empty().append(html);
                             } else {
 
