@@ -1,8 +1,7 @@
-from flask import Blueprint, render_template, redirect, flash, url_for, session, request, g
-from flask_login import login_user, logout_user, login_required
+from flask import Blueprint, render_template, redirect, flash, url_for,  request
+from flask_login import logout_user, login_required
 
 from accounts.forms import RegisterForm, LoginForm
-from models import User, UserLoginHistory, db
 
 accounts = Blueprint('accounts', __name__,
                      template_folder='templates',
@@ -23,18 +22,12 @@ def login():
             return redirect(next_url)
         else:
             flash('登录失败，请稍后重试', 'danger')
-    # else:
-    #     print(form.errors)
     return render_template('login.html', form=form, next_url=next_url)
 
 
 @accounts.route('/logout')
 def logout():
     """ 退出登录 """
-    # 自定义登录的退出
-    # session['user_id'] = ''
-    # g.current_user = None
-    # flask-login登录的退出
     logout_user()
     flash('期待下一次相见！', 'success')
     return redirect(url_for('accounts.login'))

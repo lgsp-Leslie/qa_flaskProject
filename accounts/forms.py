@@ -95,9 +95,6 @@ class LoginForm(FlaskForm):
             user = User.query.filter_by(username=username, password=password).first()
 
             # 2、登录用户
-            # 自定义登录
-            # session['user_id'] = user.id
-            # 使用flask_login扩展登录
             login_user(user)
 
             # 3、记录日志
