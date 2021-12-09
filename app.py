@@ -33,6 +33,7 @@ app.register_blueprint(qa, url_prefix='/')
 app.jinja_env.filters['number_split'] = number_split
 app.jinja_env.filters['dt_format_show'] = dt_format_show
 
+
 # flask-login登录
 @login_manager.user_loader
 def load_user(user_id):

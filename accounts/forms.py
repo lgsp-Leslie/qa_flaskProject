@@ -3,6 +3,7 @@ import hashlib
 from flask import request
 from flask_login import login_user
 from flask_wtf import FlaskForm
+from werkzeug.security import check_password_hash
 from wtforms import StringField, PasswordField, validators
 from wtforms.validators import Length, ValidationError
 
@@ -28,7 +29,7 @@ class RegisterForm(FlaskForm):
     re_password = PasswordField(label='确认密码：', render_kw={
         'class': 'form-control input-lg',
         'placeholder': '请再次输入密码'
-    }, validators=[validators.DataRequired('请输入确认密码'), validators.EqualTo('re_password', message='两次密码输入不一致')])
+    }, validators=[validators.DataRequired('请输入确认密码'), validators.EqualTo('password', message='两次密码输入不一致')])
 
     def validate_username(self, field):
         """ 检测用户名是否已经存在 """
